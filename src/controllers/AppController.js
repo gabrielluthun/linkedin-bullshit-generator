@@ -1,5 +1,6 @@
 import { COOLDOWN_MS } from '../config/constants.js';
 import { getKeywordsByIds, MAX_KEYWORDS, MIN_KEYWORDS } from '../config/keywords.js';
+import { getSectorById } from '../config/sectors.js';
 import { getToneById } from '../config/tones.js';
 import { GeminiApiError } from '../services/GeminiService.js';
 
@@ -26,6 +27,7 @@ export class AppController {
     this.view.mount();
     this.view.bindEvents({
       onKeywordToggle: (keywordId) => this.handleKeywordToggle(keywordId),
+      onSectorSelect: (sectorId) => this.handleSectorSelect(sectorId),
       onToneSelect: (toneId) => this.handleToneSelect(toneId),
       onSubmit: () => this.handleSubmit(),
       onCopy: () => this.handleCopy(),
@@ -63,6 +65,16 @@ export class AppController {
   }
 
   /**
+   * @param {string} sectorId
+   */
+  handleSectorSelect(sectorId) {
+    this.state.update({
+      selectedSectorId: sectorId,
+      errorMessage: null,
+    });
+  }
+
+  /**
    * @param {string} toneId
    */
   handleToneSelect(toneId) {
@@ -88,6 +100,7 @@ export class AppController {
     }
 
     const tone = getToneById(this.state.selectedToneId);
+    const sector = getSectorById(this.state.selectedSectorId);
     const keywords = getKeywordsByIds(selectedKeywordIds).map((k) => k.label);
 
     this.state.update({
@@ -97,7 +110,7 @@ export class AppController {
     });
 
     try {
-      const resultText = await this.geminiService.generate(keywords, tone.label);
+      const resultText = await this.geminiService.generate(keywords, tone.label, sector);
       this.state.update({
         resultText,
         isLoading: false,
