@@ -23,7 +23,9 @@ export class AppView {
       sectorGroup: this.root.querySelector('[data-el="sectors"]'),
       keywordGroup: this.root.querySelector('[data-el="keywords"]'),
       keywordHint: this.root.querySelector('[data-el="keyword-hint"]'),
+      keywordToggle: this.root.querySelector('[data-el="keywords-toggle"]'),
       toneGroup: this.root.querySelector('[data-el="tones"]'),
+      toneToggle: this.root.querySelector('[data-el="tones-toggle"]'),
       submitBtn: this.root.querySelector('[data-el="submit"]'),
       submitLabel: this.root.querySelector('[data-el="submit-label"]'),
       errorBox: this.root.querySelector('[data-el="error"]'),
@@ -32,6 +34,7 @@ export class AppView {
       copyBtn: this.root.querySelector('[data-el="copy"]'),
       copyLabel: this.root.querySelector('[data-el="copy-label"]'),
     };
+    this.#bindToggles();
   }
 
   /**
@@ -44,7 +47,7 @@ export class AppView {
 
     elements.sectorGroup?.querySelectorAll('[data-sector-id]').forEach((btn) => {
       const isActive = btn.getAttribute('data-sector-id') === state.selectedSectorId;
-      btn.classList.toggle('chip-btn--active', isActive);
+      btn.classList.toggle('chip-btn--active-sector', isActive);
       btn.setAttribute('aria-pressed', String(isActive));
     });
 
@@ -55,12 +58,12 @@ export class AppView {
     });
 
     if (elements.keywordHint) {
-      elements.keywordHint.textContent = `${selectedCount} / ${MAX_KEYWORDS} sélectionné${selectedCount > 1 ? 's' : ''} (min. ${MIN_KEYWORDS})`;
+      elements.keywordHint.textContent = `${selectedCount} / ${MAX_KEYWORDS} choisi${selectedCount > 1 ? 's' : ''} (min. ${MIN_KEYWORDS})`;
     }
 
     elements.toneGroup?.querySelectorAll('[data-tone-id]').forEach((btn) => {
       const isActive = btn.getAttribute('data-tone-id') === state.selectedToneId;
-      btn.classList.toggle('chip-btn--active', isActive);
+      btn.classList.toggle('chip-btn--active-tone', isActive);
       btn.setAttribute('aria-pressed', String(isActive));
     });
 
@@ -146,6 +149,39 @@ export class AppView {
     });
   }
 
+  /**
+   * Bascule "Voir plus" purement présentationnelle (n'affecte pas le Model).
+   */
+  #bindToggles() {
+    this.elements.keywordToggle?.addEventListener('click', () => {
+      this.#toggleHidden(this.elements.keywordGroup, this.elements.keywordToggle, 'mots-clés');
+    });
+
+    this.elements.toneToggle?.addEventListener('click', () => {
+      this.#toggleHidden(this.elements.toneGroup, this.elements.toneToggle, 'tons');
+    });
+  }
+
+  /**
+   * @param {HTMLElement|null} group
+   * @param {HTMLElement|null} toggleBtn
+   * @param {string} noun
+   */
+  #toggleHidden(group, toggleBtn, noun) {
+    if (!group || !toggleBtn) return;
+    const extraItems = group.querySelectorAll('.chip-extra');
+    const isExpanded = toggleBtn.getAttribute('aria-expanded') === 'true';
+
+    extraItems.forEach((item) => {
+      item.classList.toggle('chip-hidden', isExpanded);
+    });
+
+    toggleBtn.setAttribute('aria-expanded', String(!isExpanded));
+    toggleBtn.textContent = isExpanded
+      ? `+ ${extraItems.length} autres ${noun}`
+      : `− Afficher moins de ${noun}`;
+  }
+
   #template() {
     const sectorsHtml = SECTORS.map(
       (sector) => `
@@ -162,33 +198,44 @@ export class AppView {
       `,
     ).join('');
 
-    const keywordsHtml = KEYWORDS.map(
-      (keyword) => `
-        <button
-          type="button"
-          class="chip-btn"
-          data-keyword-id="${keyword.id}"
-          aria-pressed="false"
-        >
-          ${keyword.label}
-        </button>
-      `,
-    ).join('');
+    const featuredKeywords = KEYWORDS.filter((k) => k.featured);
+    const extraKeywords = KEYWORDS.filter((k) => !k.featured);
 
-    const tonesHtml = TONES.map(
-      (tone) => `
-        <button
-          type="button"
-          class="chip-btn"
-          data-tone-id="${tone.id}"
-          aria-pressed="false"
-          title="${tone.label}"
-        >
-          <span aria-hidden="true">${tone.emoji}</span>
-          <span>${tone.shortLabel}</span>
-        </button>
-      `,
-    ).join('');
+    const renderKeyword = (keyword, hidden) => `
+      <button
+        type="button"
+        class="chip-btn${hidden ? ' chip-extra chip-hidden' : ''}"
+        data-keyword-id="${keyword.id}"
+        aria-pressed="false"
+      >
+        <span aria-hidden="true">${keyword.emoji}</span>
+        <span>${keyword.label}</span>
+      </button>
+    `;
+
+    const keywordsHtml =
+      featuredKeywords.map((k) => renderKeyword(k, false)).join('') +
+      extraKeywords.map((k) => renderKeyword(k, true)).join('');
+
+    const featuredTones = TONES.filter((t) => t.featured);
+    const extraTones = TONES.filter((t) => !t.featured);
+
+    const renderTone = (tone, hidden) => `
+      <button
+        type="button"
+        class="chip-btn${hidden ? ' chip-extra chip-hidden' : ''}"
+        data-tone-id="${tone.id}"
+        aria-pressed="false"
+        title="${tone.label}"
+      >
+        <span aria-hidden="true">${tone.emoji}</span>
+        <span>${tone.shortLabel}</span>
+      </button>
+    `;
+
+    const tonesHtml =
+      featuredTones.map((t) => renderTone(t, false)).join('') +
+      extraTones.map((t) => renderTone(t, true)).join('');
 
     const apiAlert = this.hasApiKey
       ? ''
@@ -216,7 +263,7 @@ export class AppView {
             LinkedIn Bullshit Detox 🧼
           </h1>
           <p class="mx-auto mt-3 max-w-xl text-base text-zinc-400 sm:text-lg">
-            Choisissez un métier, vos buzzwords et un ton. On génère un post ancré dans votre secteur.
+            Trois clics, un post 100% synthétique. À vous de choisir le degré de bullshit.
           </p>
         </header>
 
@@ -224,7 +271,7 @@ export class AppView {
 
         <main class="card space-y-6 p-5 sm:p-7">
           <section>
-            <p class="mb-3 text-sm font-medium text-zinc-300">Secteur / métier</p>
+            <p class="mb-3 text-sm font-medium text-zinc-300">Dans quelle case tu bosses ?</p>
             <div data-el="sectors" class="flex flex-wrap gap-2" role="group" aria-label="Sélecteur de secteur">
               ${sectorsHtml}
             </div>
@@ -232,19 +279,29 @@ export class AppView {
 
           <section>
             <div class="mb-3 flex items-end justify-between gap-3">
-              <p class="text-sm font-medium text-zinc-300">Mots-clés</p>
-              <p data-el="keyword-hint" class="text-xs text-zinc-500">0 / ${MAX_KEYWORDS} sélectionné (min. ${MIN_KEYWORDS})</p>
+              <p class="text-sm font-medium text-zinc-300">Choisis tes poisons</p>
+              <p data-el="keyword-hint" class="text-xs text-zinc-500">0 / ${MAX_KEYWORDS} choisi (min. ${MIN_KEYWORDS})</p>
             </div>
             <div data-el="keywords" class="flex flex-wrap gap-2" role="group" aria-label="Sélecteur de mots-clés">
               ${keywordsHtml}
             </div>
+            ${
+              extraKeywords.length > 0
+                ? `<button type="button" data-el="keywords-toggle" class="chip-toggle mt-2" aria-expanded="false">+ ${extraKeywords.length} autres mots-clés</button>`
+                : ''
+            }
           </section>
 
           <section>
-            <p class="mb-3 text-sm font-medium text-zinc-300">Ton du post</p>
+            <p class="mb-3 text-sm font-medium text-zinc-300">Ton dosage de bullshit</p>
             <div data-el="tones" class="flex flex-wrap gap-2" role="group" aria-label="Sélecteur de ton">
               ${tonesHtml}
             </div>
+            ${
+              extraTones.length > 0
+                ? `<button type="button" data-el="tones-toggle" class="chip-toggle mt-2" aria-expanded="false">+ ${extraTones.length} autres tons</button>`
+                : ''
+            }
           </section>
 
           <section>

@@ -1,28 +1,32 @@
-/** @typedef {{ id: string, label: string }} Keyword */
+/** @typedef {{ id: string, emoji: string, label: string, featured: boolean }} Keyword */
 
-/** Mots-clés LinkedIn hardcodés — libellés courts et clairs. */
+/**
+ * Mots-clés LinkedIn hardcodés — libellés courts, clairs, et un peu potaches
+ * pour rester dans le même registre que les tons.
+ * `featured` = affiché par défaut ; les autres sont repliés sous "Voir plus".
+ */
 /** @type {Keyword[]} */
 export const KEYWORDS = [
-  { id: 'synergie', label: 'Travail d’équipe' },
-  { id: 'disruption', label: 'Tout changer' },
-  { id: 'growth-mindset', label: 'Progresser' },
-  { id: 'leadership', label: 'Prendre les devant' },
-  { id: 'resilience', label: 'Tenir bon' },
-  { id: 'hustle', label: 'Travailler trop' },
-  { id: 'networking', label: 'Réseau' },
-  { id: 'innovation', label: 'Nouveauté' },
-  { id: 'vulnerability', label: 'Parler de ses doutes' },
-  { id: 'gratitude', label: 'Dire merci' },
-  { id: 'fail-forward', label: 'Apprendre de l’échec' },
-  { id: 'thought-leadership', label: 'Avoir une vision' },
-  { id: 'empowerment', label: 'Autonomiser' },
-  { id: 'agile', label: 'S’adapter' },
-  { id: 'burnout', label: 'Au bout du rouleau' },
-  { id: 'work-life', label: 'Vie pro / perso' },
-  { id: 'raise', label: 'Lever des fonds' },
-  { id: 'ai', label: 'IA' },
-  { id: 'passion', label: 'Passion du job' },
-  { id: 'humble-brag', label: 'Fausse modestie' },
+  { id: 'synergie', emoji: '🧩', label: 'Travail d’équipe', featured: true },
+  { id: 'disruption', emoji: '💥', label: 'Tout changer', featured: false },
+  { id: 'growth-mindset', emoji: '🌱', label: 'Progresser', featured: false },
+  { id: 'leadership', emoji: '🫡', label: 'Prendre les devants', featured: false },
+  { id: 'resilience', emoji: '💪', label: 'Tenir bon', featured: false },
+  { id: 'hustle', emoji: '🥵', label: 'Travailler trop', featured: true },
+  { id: 'networking', emoji: '🕸️', label: 'Réseauter', featured: false },
+  { id: 'innovation', emoji: '💡', label: 'Inventer un truc', featured: false },
+  { id: 'vulnerability', emoji: '😢', label: 'Montrer ses doutes', featured: true },
+  { id: 'gratitude', emoji: '🙏', label: 'Dire merci', featured: false },
+  { id: 'fail-forward', emoji: '🤕', label: 'Apprendre de l’échec', featured: false },
+  { id: 'thought-leadership', emoji: '🔮', label: 'Avoir une vision', featured: false },
+  { id: 'empowerment', emoji: '🦸', label: 'Autonomiser', featured: false },
+  { id: 'agile', emoji: '🌊', label: 'S’adapter', featured: false },
+  { id: 'burnout', emoji: '🫠', label: 'Au bout du rouleau', featured: true },
+  { id: 'work-life', emoji: '⚖️', label: 'Vie pro / perso', featured: false },
+  { id: 'raise', emoji: '💰', label: 'Lever des fonds', featured: true },
+  { id: 'ai', emoji: '🤖', label: 'IA partout', featured: true },
+  { id: 'passion', emoji: '❤️‍🔥', label: 'Kiffer son taf', featured: true },
+  { id: 'humble-brag', emoji: '😇', label: 'Fausse modestie', featured: true },
 ];
 
 export const MIN_KEYWORDS = 1;
