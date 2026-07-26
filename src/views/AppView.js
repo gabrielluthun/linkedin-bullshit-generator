@@ -1,4 +1,5 @@
 import { KEYWORDS, MAX_KEYWORDS, MIN_KEYWORDS } from '../config/keywords.js';
+import { SECTORS } from '../config/sectors.js';
 import { TONES } from '../config/tones.js';
 
 /**
@@ -19,6 +20,7 @@ export class AppView {
     this.root.innerHTML = this.#template();
     this.elements = {
       apiAlert: this.root.querySelector('[data-el="api-alert"]'),
+      sectorGroup: this.root.querySelector('[data-el="sectors"]'),
       keywordGroup: this.root.querySelector('[data-el="keywords"]'),
       keywordHint: this.root.querySelector('[data-el="keyword-hint"]'),
       toneGroup: this.root.querySelector('[data-el="tones"]'),
@@ -39,6 +41,12 @@ export class AppView {
     const { elements } = this;
     const selectedCount = state.selectedKeywordIds.length;
     const selectedSet = new Set(state.selectedKeywordIds);
+
+    elements.sectorGroup?.querySelectorAll('[data-sector-id]').forEach((btn) => {
+      const isActive = btn.getAttribute('data-sector-id') === state.selectedSectorId;
+      btn.classList.toggle('chip-btn--active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
 
     elements.keywordGroup?.querySelectorAll('[data-keyword-id]').forEach((btn) => {
       const isActive = selectedSet.has(btn.getAttribute('data-keyword-id'));
@@ -104,12 +112,19 @@ export class AppView {
   /**
    * @param {{
    *   onKeywordToggle: (keywordId: string) => void,
+   *   onSectorSelect: (sectorId: string) => void,
    *   onToneSelect: (toneId: string) => void,
    *   onSubmit: () => void,
    *   onCopy: () => void,
    * }} handlers
    */
   bindEvents(handlers) {
+    this.elements.sectorGroup?.addEventListener('click', (event) => {
+      const btn = event.target.closest('[data-sector-id]');
+      if (!btn) return;
+      handlers.onSectorSelect(btn.getAttribute('data-sector-id'));
+    });
+
     this.elements.keywordGroup?.addEventListener('click', (event) => {
       const btn = event.target.closest('[data-keyword-id]');
       if (!btn) return;
@@ -132,6 +147,21 @@ export class AppView {
   }
 
   #template() {
+    const sectorsHtml = SECTORS.map(
+      (sector) => `
+        <button
+          type="button"
+          class="chip-btn"
+          data-sector-id="${sector.id}"
+          aria-pressed="false"
+          title="${sector.label}"
+        >
+          <span aria-hidden="true">${sector.emoji}</span>
+          <span>${sector.shortLabel}</span>
+        </button>
+      `,
+    ).join('');
+
     const keywordsHtml = KEYWORDS.map(
       (keyword) => `
         <button
@@ -186,14 +216,20 @@ export class AppView {
             LinkedIn Bullshit Detox 🧼
           </h1>
           <p class="mx-auto mt-3 max-w-xl text-base text-zinc-400 sm:text-lg">
-            Choisissez vos buzzwords. On génère le post. À vous le ton — honnête, cynique,
-            ou encore plus LinkedIn.
+            Choisissez un métier, vos buzzwords et un ton. On génère un post ancré dans votre secteur.
           </p>
         </header>
 
         ${apiAlert}
 
         <main class="card space-y-6 p-5 sm:p-7">
+          <section>
+            <p class="mb-3 text-sm font-medium text-zinc-300">Secteur / métier</p>
+            <div data-el="sectors" class="flex flex-wrap gap-2" role="group" aria-label="Sélecteur de secteur">
+              ${sectorsHtml}
+            </div>
+          </section>
+
           <section>
             <div class="mb-3 flex items-end justify-between gap-3">
               <p class="text-sm font-medium text-zinc-300">Mots-clés</p>
@@ -242,7 +278,7 @@ export class AppView {
         </section>
 
         <footer class="mt-10 text-center text-xs text-zinc-600">
-          Propulsé par Gemini 2.0 Flash · Usage personnel / satire
+          Propulsé par Gemini · Usage personnel / satire
         </footer>
       </div>
     `;
