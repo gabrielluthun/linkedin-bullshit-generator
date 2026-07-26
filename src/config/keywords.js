@@ -1,28 +1,28 @@
 /** @typedef {{ id: string, label: string }} Keyword */
 
-/** Mots-clés LinkedIn hardcodés pour la génération. */
+/** Mots-clés LinkedIn hardcodés — libellés courts et clairs. */
 /** @type {Keyword[]} */
 export const KEYWORDS = [
-  { id: 'synergie', label: 'Synergie' },
-  { id: 'disruption', label: 'Disruption' },
-  { id: 'growth-mindset', label: 'Growth mindset' },
-  { id: 'leadership', label: 'Leadership' },
-  { id: 'resilience', label: 'Résilience' },
-  { id: 'hustle', label: 'Hustle' },
-  { id: 'networking', label: 'Networking' },
-  { id: 'innovation', label: 'Innovation' },
-  { id: 'vulnerability', label: 'Vulnérabilité' },
-  { id: 'gratitude', label: 'Gratitude' },
-  { id: 'fail-forward', label: 'Fail forward' },
-  { id: 'thought-leadership', label: 'Thought leadership' },
-  { id: 'empowerment', label: 'Empowerment' },
-  { id: 'agile', label: 'Agile' },
-  { id: 'burnout', label: 'Burn-out' },
-  { id: 'work-life', label: 'Work-life balance' },
-  { id: 'raise', label: 'Levée de fonds' },
+  { id: 'synergie', label: 'Travail d’équipe' },
+  { id: 'disruption', label: 'Tout changer' },
+  { id: 'growth-mindset', label: 'Progresser' },
+  { id: 'leadership', label: 'Prendre les devant' },
+  { id: 'resilience', label: 'Tenir bon' },
+  { id: 'hustle', label: 'Travailler trop' },
+  { id: 'networking', label: 'Réseau' },
+  { id: 'innovation', label: 'Nouveauté' },
+  { id: 'vulnerability', label: 'Parler de ses doutes' },
+  { id: 'gratitude', label: 'Dire merci' },
+  { id: 'fail-forward', label: 'Apprendre de l’échec' },
+  { id: 'thought-leadership', label: 'Avoir une vision' },
+  { id: 'empowerment', label: 'Autonomiser' },
+  { id: 'agile', label: 'S’adapter' },
+  { id: 'burnout', label: 'Au bout du rouleau' },
+  { id: 'work-life', label: 'Vie pro / perso' },
+  { id: 'raise', label: 'Lever des fonds' },
   { id: 'ai', label: 'IA' },
-  { id: 'passion', label: 'Passion' },
-  { id: 'humble-brag', label: 'Humble brag' },
+  { id: 'passion', label: 'Passion du job' },
+  { id: 'humble-brag', label: 'Fausse modestie' },
 ];
 
 export const MIN_KEYWORDS = 1;
