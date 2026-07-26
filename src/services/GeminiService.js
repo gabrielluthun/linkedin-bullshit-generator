@@ -23,18 +23,19 @@ export class GeminiService {
   /**
    * @param {string[]} keywords
    * @param {string} toneLabel
+   * @param {{ label: string, jargon: string }} sector
    * @returns {Promise<string>}
    */
-  async generate(keywords, toneLabel) {
+  async generate(keywords, toneLabel, sector) {
     if (!this.hasApiKey()) {
       throw new GeminiApiError(
         'Clé API Gemini manquante. Définissez VITE_GEMINI_API_KEY dans votre fichier .env puis relancez le serveur.',
       );
     }
 
-    const systemPrompt = buildSystemPrompt(toneLabel);
+    const systemPrompt = buildSystemPrompt(toneLabel, sector);
     const keywordList = keywords.map((k) => `- ${k}`).join('\n');
-    const userPrompt = `Génère un post LinkedIn complet à partir de ces mots-clés :\n${keywordList}`;
+    const userPrompt = `Secteur : ${sector.label}\nGénère un post LinkedIn complet à partir de ces mots-clés :\n${keywordList}`;
 
     let response;
     try {
