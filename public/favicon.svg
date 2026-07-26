@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="14" fill="#09090b"/>
+  <!-- soap bar -->
+  <rect x="12" y="28" width="40" height="22" rx="8" fill="#38bdf8"/>
+  <rect x="12" y="28" width="40" height="10" rx="8" fill="#7dd3fc"/>
+  <ellipse cx="32" cy="33" rx="10" ry="3" fill="#e0f2fe" opacity="0.55"/>
+  <!-- bubbles -->
+  <circle cx="22" cy="18" r="5" fill="#22d3ee" opacity="0.9"/>
+  <circle cx="34" cy="12" r="3.5" fill="#67e8f9" opacity="0.85"/>
+  <circle cx="44" cy="20" r="4" fill="#a5f3fc" opacity="0.75"/>
+  <circle cx="28" cy="22" r="2" fill="#ecfeff" opacity="0.9"/>
+</svg>
