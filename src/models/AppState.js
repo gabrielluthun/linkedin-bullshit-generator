@@ -1,3 +1,4 @@
+import { DEFAULT_SECTOR_ID } from '../config/sectors.js';
 import { DEFAULT_TONE_ID } from '../config/tones.js';
 
 /**
@@ -7,6 +8,8 @@ export class AppState {
   constructor() {
     /** @type {string[]} */
     this.selectedKeywordIds = [];
+    /** @type {string} */
+    this.selectedSectorId = DEFAULT_SECTOR_ID;
     /** @type {string} */
     this.selectedToneId = DEFAULT_TONE_ID;
     /** @type {string} */
