@@ -1,9 +1,5 @@
-import {
-  GEMINI_API_KEY,
-  GEMINI_MODEL_CHAIN,
-  buildGeminiEndpoint,
-  buildSystemPrompt,
-} from '../config/constants.js';
+import { GEMINI_API_KEY, GEMINI_MODEL_CHAIN, buildGeminiEndpoint } from '../config/gemini.js';
+import { buildSystemPrompt } from '../config/prompt.js';
 
 export class GeminiApiError extends Error {
   /**
@@ -19,7 +15,7 @@ export class GeminiApiError extends Error {
 
 /**
  * Service d'accès à l'API Gemini (couche Service / N-tier).
- * En cas de rate limit (429), bascule : gemini-3.6-flash → 3.5-flash → 3-flash.
+ * En cas de rate limit (429), bascule : gemini-3.6-flash → 3.5-flash → 3.5-flash-lite.
  */
 export class GeminiService {
   hasApiKey() {
