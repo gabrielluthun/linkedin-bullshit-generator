@@ -119,6 +119,13 @@ export function getSectorById(id) {
 }
 
 /**
+ * @returns {string} Identifiant d'un secteur tiré au hasard.
+ */
+export function pickRandomSectorId() {
+  return SECTORS[Math.floor(Math.random() * SECTORS.length)].id;
+}
+
+/**
  * Tire aléatoirement quelques termes du jargon d'un secteur.
  * @param {string} jargon
  * @param {number} [count=4]
