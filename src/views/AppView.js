@@ -260,7 +260,7 @@ export class AppView {
             LinkedIn Generator
           </p>
           <h1 class="text-3xl font-bold tracking-tight text-zinc-50 sm:text-4xl">
-            LinkedIn Bullshit Detox 🧼
+            LinkedIn Bullshit Generator
           </h1>
           <p class="mx-auto mt-3 max-w-xl text-base text-zinc-400 sm:text-lg">
             Trois clics, un post 100% synthétique. À vous de choisir le degré de bullshit.
@@ -279,7 +279,7 @@ export class AppView {
 
           <section>
             <div class="mb-3 flex items-end justify-between gap-3">
-              <p class="text-sm font-medium text-zinc-300">Choisis tes poisons</p>
+              <p class="text-sm font-medium text-zinc-300">Choisis tes buzzwords</p>
               <p data-el="keyword-hint" class="text-xs text-zinc-500">0 / ${MAX_KEYWORDS} choisi (min. ${MIN_KEYWORDS})</p>
             </div>
             <div data-el="keywords" class="flex flex-wrap gap-2" role="group" aria-label="Sélecteur de mots-clés">
@@ -293,7 +293,7 @@ export class AppView {
           </section>
 
           <section>
-            <p class="mb-3 text-sm font-medium text-zinc-300">Ton dosage de bullshit</p>
+            <p class="mb-3 text-sm font-medium text-zinc-300">Ton du post</p>
             <div data-el="tones" class="flex flex-wrap gap-2" role="group" aria-label="Sélecteur de ton">
               ${tonesHtml}
             </div>
