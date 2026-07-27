@@ -1,8 +1,15 @@
-import { COOLDOWN_MS } from '../config/constants.js';
-import { getKeywordsByIds, MAX_KEYWORDS, MIN_KEYWORDS } from '../config/keywords.js';
-import { getSectorById } from '../config/sectors.js';
-import { getToneById } from '../config/tones.js';
+import {
+  getKeywordsByIds,
+  MAX_KEYWORDS,
+  MIN_KEYWORDS,
+  pickRandomKeywordIds,
+} from '../config/keywords.js';
+import { getSectorById, pickRandomSectorId } from '../config/sectors.js';
+import { getToneById, pickRandomToneId } from '../config/tones.js';
 import { GeminiApiError } from '../services/GeminiService.js';
+
+/** Délai imposé entre deux générations. Exporté pour que la vue libelle l'attente. */
+export const COOLDOWN_MS = 3000;
 
 /**
  * Contrôleur — orchestre Model, View et Services (MVC — Controller).
@@ -30,6 +37,7 @@ export class AppController {
       onSectorSelect: (sectorId) => this.handleSectorSelect(sectorId),
       onToneSelect: (toneId) => this.handleToneSelect(toneId),
       onSubmit: () => this.handleSubmit(),
+      onRandomize: () => this.handleRandomize(),
       onCopy: () => this.handleCopy(),
     });
     this.state.subscribe((state) => this.view.render(state));
@@ -84,6 +92,24 @@ export class AppController {
     });
   }
 
+  /**
+   * Tire une combinaison complète au hasard puis lance la génération.
+   */
+  handleRandomize() {
+    if (this.state.isLoading || this.state.isOnCooldown) {
+      return Promise.resolve();
+    }
+
+    this.state.update({
+      selectedSectorId: pickRandomSectorId(),
+      selectedKeywordIds: pickRandomKeywordIds(),
+      selectedToneId: pickRandomToneId(),
+      errorMessage: null,
+    });
+
+    return this.handleSubmit();
+  }
+
   async handleSubmit() {
     const { selectedKeywordIds, isLoading, isOnCooldown } = this.state;
 
@@ -101,7 +127,9 @@ export class AppController {
 
     const tone = getToneById(this.state.selectedToneId);
     const sector = getSectorById(this.state.selectedSectorId);
-    const keywords = getKeywordsByIds(selectedKeywordIds).map((k) => k.label);
+    const keywords = getKeywordsByIds(selectedKeywordIds).map(
+      (k) => `${k.buzzword} (${k.label})`,
+    );
 
     this.state.update({
       isLoading: true,
@@ -110,7 +138,7 @@ export class AppController {
     });
 
     try {
-      const resultText = await this.geminiService.generate(keywords, tone.label, sector);
+      const resultText = await this.geminiService.generate(keywords, tone.promptTone, sector);
       this.state.update({
         resultText,
         isLoading: false,

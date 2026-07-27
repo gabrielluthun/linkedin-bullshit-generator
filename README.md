@@ -6,9 +6,10 @@ Choisissez un **secteur**, 1 à 5 **mots-clés**, un **ton**, puis générez un 
 
 ## Fonctionnalités
 
-- **12 secteurs** avec jargon métier 
-- **20 mots-clés** (1 à 5 sélectionnables) — une partie affichée par défaut, le reste sous « Voir plus »
-- **12 tons** satiriques
+- **12 secteurs** avec jargon métier
+- **28 mots-clés** (1 à 5 sélectionnables) : une partie affichée par défaut, le reste sous « Voir plus »
+- **12 tons** satiriques, chacun avec sa propre consigne de prompt
+- Bouton **« Surprends-moi »** : tire secteur, mots-clés et ton au hasard, puis génère
 - Copie du résultat dans le presse-papier
 - Cooldown de 3 s entre deux générations
 
@@ -19,23 +20,26 @@ Choisissez un **secteur**, 1 à 5 **mots-clés**, un **ton**, puis générez un 
 | Vite | ^7 |
 | Tailwind CSS | ^4 (`@tailwindcss/vite`) |
 | JavaScript | Vanilla (ES modules) |
-| API | Google Gemini (`gemini-3.6-flash` → fallback `gemini-3.5-flash` → secondary fallback `gemini-3-flash`) |
+| API | Google Gemini (`gemini-3.6-flash` → fallback `gemini-3.5-flash` → secondary fallback `gemini-3.5-flash-lite`) |
 
 ## Architecture (MVC + Service)
 
 ```
 src/
   config/
-    constants.js   # Modèle Gemini, endpoint, prompt système, cooldown
+    gemini.js      # Modèles, chaîne de fallback, clé, endpoint
+    prompt.js      # Prompt système + injection du contexte
     keywords.js    # Mots-clés + min/max
     sectors.js     # Secteurs + jargon
     tones.js       # Tons satiriques
   models/
     AppState.js    # État réactif (subscribe / update)
   views/
-    AppView.js     # DOM / UI
+    AppView.js     # État du DOM et événements
+    template.js    # HTML initial
+    chips.js       # Rendu partagé des puces de sélection
   controllers/
-    AppController.js  # Orchestration
+    AppController.js  # Orchestration + cooldown entre deux générations
   services/
     GeminiService.js  # Appel API Gemini
   main.js          # Point d’entrée
