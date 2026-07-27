@@ -15,7 +15,7 @@ export const SECTORS = [
     emoji: '💻',
     label: 'Tech / Produit',
     shortLabel: 'Tech',
-    jargon: 'sprint, OKR, roadmap, deploy, tech debt, scaling, product-market fit',
+    jargon: 'sprint, OKR, roadmap, deploy, dette technique, scaling, product-market fit',
   },
   {
     id: 'marketing',
@@ -29,7 +29,7 @@ export const SECTORS = [
     emoji: '🤝',
     label: 'Sales / Business Dev',
     shortLabel: 'Sales',
-    jargon: 'pipeline, closing, quota, CRM, discovery call, ARR, upsell',
+    jargon: 'pipeline, closing, quota, CRM, discovery call, revenu récurrent annuel, upsell',
   },
   {
     id: 'hr',
