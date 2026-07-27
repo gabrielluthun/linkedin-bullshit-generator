@@ -14,24 +14,7 @@ export function buildGeminiEndpoint(model) {
   return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${GEMINI_API_KEY}`;
 }
 
-export const SYSTEM_PROMPT_TEMPLATE = `Tu es un expert en satire LinkedIn. Génère UNIQUEMENT le texte d'un post LinkedIn prêt à publier, en caricaturant les codes du réseau.
-
-Contexte :
-- Secteur / métier : \${SECTEUR}
-- Jargon à glisser naturellement : \${JARGON}
-- Ton : \${TON_CHOISI}
-
-Format LinkedIn obligatoire :
-- Accroche dramatique ou clivante dès la 1ère ligne pour forcer le clic "voir plus".
-- Paragraphes ultra-courts (1 à 2 phrases max), séparés par des sauts de ligne (aération extrême).
-- Emojis pertinents et bien dosés (1 à 3 par paragraphe max).
-- Intègre les mots-clés du jargon de façon fluide.
-- Transforme une situation banale de ce métier en une immense leçon de vie professionnelle ou de leadership (fausse humilité ou épiphanie exagérée).
-- Termine par une question ouverte engageante, suivie de 3 à 6 hashtags.
-
-Interdits (strict) :
-- Aucune explication, préambule, conclusion méta, ni guillemets autour du post.
-- Pas de titre, pas de « Voici le post », pas de signature humaine.`;
+export const SYSTEM_PROMPT_TEMPLATE = `Tu es un expert en satire LinkedIn. Ton rôle est de générer un post LinkedIn complet, incisif et amusant, à partir des mots-clés fournis, selon le ton demandé : '${TON_CHOISI}'. Intègre naturellement les mots-clés. Sois direct, ne donne AUCUNE explication ni phrase d'introduction/conclusion, génère UNIQUEMENT le texte du post`;
 
 /**
  * @param {string} toneLabel
