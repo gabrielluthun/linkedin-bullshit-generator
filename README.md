@@ -1,6 +1,6 @@
-# LinkedIn Bullshit Detox 🧼
+# LinkedIn Bullshit Generator
 
-SPA **Vite + Vanilla JS + Tailwind CSS** qui génère des posts LinkedIn satiriques via l’API Gemini (`gemini-3.6-flash`).
+Petite application web qui génère des posts LinkedIn satiriques.
 
 Choisissez un **secteur**, 1 à 5 **mots-clés**, un **ton**, puis générez un post prêt à copier.
 
@@ -19,7 +19,7 @@ Choisissez un **secteur**, 1 à 5 **mots-clés**, un **ton**, puis générez un 
 | Vite | ^7 |
 | Tailwind CSS | ^4 (`@tailwindcss/vite`) |
 | JavaScript | Vanilla (ES modules) |
-| API | Google Gemini (`gemini-3.6-flash`) |
+| API | Google Gemini (`gemini-3.6-flash` → fallback `gemini-3.5-flash`) |
 
 ## Architecture (MVC + Service)
 
