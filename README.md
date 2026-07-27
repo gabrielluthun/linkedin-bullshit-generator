@@ -20,7 +20,7 @@ Choisissez un **secteur**, 1 à 5 **mots-clés**, un **ton**, puis générez un 
 | Vite | ^7 |
 | Tailwind CSS | ^4 (`@tailwindcss/vite`) |
 | JavaScript | Vanilla (ES modules) |
-| API | Google Gemini (`gemini-3.6-flash` → fallback `gemini-3.5-flash` → secondary fallback `gemini-3.5-flash-lite`) |
+| Utilisation de clé API | Google Gemini (`gemini-3.6-flash` → fallback `gemini-3.5-flash` → secondary fallback `gemini-3.5-flash-lite`) |
 
 ## Architecture (MVC + Service)
 
