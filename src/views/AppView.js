@@ -256,14 +256,11 @@ export class AppView {
     return `
       <div class="relative mx-auto min-h-screen max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
         <header class="mb-8 text-center sm:mb-10">
-          <p class="mb-3 text-xs font-medium uppercase tracking-[0.2em] text-sky-400/80">
-            LinkedIn Generator
-          </p>
           <h1 class="text-3xl font-bold tracking-tight text-zinc-50 sm:text-4xl">
             LinkedIn Bullshit Generator
           </h1>
           <p class="mx-auto mt-3 max-w-xl text-base text-zinc-400 sm:text-lg">
-            Trois clics, un post 100% synthétique. À vous de choisir le degré de bullshit.
+            Trois clics, un post 100% bullshit. <br /><small>(ne faites pas ça à votre réseau)</small>
           </p>
         </header>
 
@@ -335,7 +332,9 @@ export class AppView {
         </section>
 
         <footer class="mt-10 text-center text-xs text-zinc-600">
-          Propulsé par Gemini · Usage personnel / satire
+          Aucun networker n’a été blessé pendant la génération de posts
+          <br />
+          (sauf peut-être l'égo de ton feed LinkedIn)
         </footer>
       </div>
     `;
