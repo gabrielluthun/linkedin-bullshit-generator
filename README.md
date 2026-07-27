@@ -1,17 +1,45 @@
 # LinkedIn Bullshit Detox 🧼
 
-SPA Vite + Vanilla JS + Tailwind CSS qui génère des posts LinkedIn satiriques via l’API Gemini (`gemini-2.0-flash`), à partir de mots-clés hardcodés et d’un ton choisi.
+SPA **Vite + Vanilla JS + Tailwind CSS** qui génère des posts LinkedIn satiriques via l’API Gemini (`gemini-3.6-flash`).
+
+Choisissez un **secteur**, 1 à 5 **mots-clés**, un **ton**, puis générez un post prêt à copier.
+
+## Fonctionnalités
+
+- **12 secteurs** avec jargon métier 
+- **20 mots-clés** (1 à 5 sélectionnables) — une partie affichée par défaut, le reste sous « Voir plus »
+- **12 tons** satiriques
+- Copie du résultat dans le presse-papier
+- Cooldown de 3 s entre deux générations
+
+## Stack
+
+| Outil | Version |
+| --- | --- |
+| Vite | ^7 |
+| Tailwind CSS | ^4 (`@tailwindcss/vite`) |
+| JavaScript | Vanilla (ES modules) |
+| API | Google Gemini (`gemini-3.6-flash`) |
 
 ## Architecture (MVC + Service)
 
 ```
 src/
-  config/          # Tons, constantes, prompt système
-  models/          # AppState (état réactif)
-  views/           # AppView (DOM / UI)
-  controllers/     # AppController (orchestration)
-  services/        # GeminiService (appel API)
+  config/
+    constants.js   # Modèle Gemini, endpoint, prompt système, cooldown
+    keywords.js    # Mots-clés + min/max
+    sectors.js     # Secteurs + jargon
+    tones.js       # Tons satiriques
+  models/
+    AppState.js    # État réactif (subscribe / update)
+  views/
+    AppView.js     # DOM / UI
+  controllers/
+    AppController.js  # Orchestration
+  services/
+    GeminiService.js  # Appel API Gemini
   main.js          # Point d’entrée
+  style.css        # Tailwind + styles custom
 ```
 
 ## Prérequis
@@ -26,7 +54,7 @@ npm install
 cp .env.example .env
 ```
 
-Renseignez votre clé dans `.env` :
+Renseignez votre clé dans un `.env` :
 
 ```env
 VITE_GEMINI_API_KEY=votre_cle_api_gemini_ici
@@ -45,7 +73,19 @@ npm run build
 npm run preview
 ```
 
-## Sécurité
+## Utilisation
 
-La clé est lue via `import.meta.env.VITE_GEMINI_API_KEY` (pas de localStorage, pas d’input UI).  
-Attention : les variables préfixées `VITE_` sont exposées côté client au build. Pour un usage public, préférez un proxy backend.
+1. Sélectionnez un **secteur**.
+2. Choisissez **1 à 5 mots-clés**.
+3. Choisissez un **ton**.
+4. Cliquez sur **Générer**.
+5. Copiez le post généré si souhaité.
+
+## Scripts npm
+
+| Commande | Description |
+| --- | --- |
+| `npm run dev` | Serveur de développement Vite |
+| `npm run build` | Build de production dans `dist/` |
+| `npm run preview` | Prévisualise le build |
+
