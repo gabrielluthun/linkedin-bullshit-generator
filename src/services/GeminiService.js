@@ -1,4 +1,10 @@
-import { GEMINI_API_KEY, GEMINI_ENDPOINT, buildSystemPrompt } from '../config/constants.js';
+import {
+  GEMINI_API_KEY,
+  GEMINI_FALLBACK_MODEL,
+  GEMINI_MODEL,
+  buildGeminiEndpoint,
+  buildSystemPrompt,
+} from '../config/constants.js';
 
 export class GeminiApiError extends Error {
   /**
@@ -14,6 +20,7 @@ export class GeminiApiError extends Error {
 
 /**
  * Service d'accès à l'API Gemini (couche Service / N-tier).
+ * En cas de rate limit (429) sur le modèle principal, bascule sur le modèle de secours.
  */
 export class GeminiService {
   hasApiKey() {
@@ -36,10 +43,38 @@ export class GeminiService {
     const systemPrompt = buildSystemPrompt(toneLabel, sector);
     const keywordList = keywords.map((k) => `- ${k}`).join('\n');
     const userPrompt = `Secteur : ${sector.label}\nGénère un post LinkedIn complet à partir de ces mots-clés :\n${keywordList}`;
+    const promptText = `${systemPrompt}\n\n${userPrompt}`;
 
+    try {
+      return await this.#generateWithModel(GEMINI_MODEL, promptText);
+    } catch (error) {
+      if (!(error instanceof GeminiApiError) || error.status !== 429) {
+        throw error;
+      }
+
+      try {
+        return await this.#generateWithModel(GEMINI_FALLBACK_MODEL, promptText);
+      } catch (fallbackError) {
+        if (fallbackError instanceof GeminiApiError && fallbackError.status === 429) {
+          throw new GeminiApiError(
+            `Rate limit atteint sur ${GEMINI_MODEL} et ${GEMINI_FALLBACK_MODEL}. Réessayez plus tard.`,
+            429,
+          );
+        }
+        throw fallbackError;
+      }
+    }
+  }
+
+  /**
+   * @param {string} model
+   * @param {string} promptText
+   * @returns {Promise<string>}
+   */
+  async #generateWithModel(model, promptText) {
     let response;
     try {
-      response = await fetch(GEMINI_ENDPOINT, {
+      response = await fetch(buildGeminiEndpoint(model), {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,7 +83,7 @@ export class GeminiService {
           contents: [
             {
               role: 'user',
-              parts: [{ text: `${systemPrompt}\n\n${userPrompt}` }],
+              parts: [{ text: promptText }],
             },
           ],
           generationConfig: {
@@ -82,7 +117,19 @@ export class GeminiService {
       throw new GeminiApiError('Réponse vide de Gemini. Réessayez dans un instant.');
     }
 
-    return text;
+    return this.#stripMarkdownEmphasis(text);
+  }
+
+  /**
+   * Retire le gras/italique Markdown (* et **) parfois ajouté autour des mots-clés.
+   * @param {string} text
+   * @returns {string}
+   */
+  #stripMarkdownEmphasis(text) {
+    return text
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*\n]+)\*/g, '$1')
+      .replace(/\*{1,2}/g, '');
   }
 
   /**
