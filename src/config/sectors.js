@@ -16,7 +16,7 @@ export const SECTORS = [
     label: 'Tech / Produit',
     shortLabel: 'Dev',
     jargon:
-      'sprint, OKR, feuille de route, deploy, dette technique, scaling, product-market fit, mise en prod, feature flag, post-mortem, backlog, refactor, CI/CD, observability, legacy, ship fast, architecture, discovery produit, user story, release, incident, tech lead, ownership technique, time-to-market, GitHub',
+      'sprint, objectifs, feuille de route, deploy, dette technique, scaling, product-market fit, mise en prod, feature flag, post-mortem, backlog, refactor, CI/CD, observability, legacy, ship fast, architecture, discovery produit, user story, release, incident, tech lead, ownership technique, time-to-market, GitHub',
   },
   {
     id: 'marketing',
