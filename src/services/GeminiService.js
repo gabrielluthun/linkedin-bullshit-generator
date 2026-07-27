@@ -1,7 +1,6 @@
 import {
   GEMINI_API_KEY,
-  GEMINI_FALLBACK_MODEL,
-  GEMINI_MODEL,
+  GEMINI_MODEL_CHAIN,
   buildGeminiEndpoint,
   buildSystemPrompt,
 } from '../config/constants.js';
@@ -20,7 +19,7 @@ export class GeminiApiError extends Error {
 
 /**
  * Service d'accès à l'API Gemini (couche Service / N-tier).
- * En cas de rate limit (429) sur le modèle principal, bascule sur le modèle de secours.
+ * En cas de rate limit (429), bascule : gemini-3.6-flash → 3.5-flash → 3-flash.
  */
 export class GeminiService {
   hasApiKey() {
@@ -45,25 +44,20 @@ export class GeminiService {
     const userPrompt = `Secteur : ${sector.label}\nGénère un post LinkedIn complet à partir de ces mots-clés :\n${keywordList}`;
     const promptText = `${systemPrompt}\n\n${userPrompt}`;
 
-    try {
-      return await this.#generateWithModel(GEMINI_MODEL, promptText);
-    } catch (error) {
-      if (!(error instanceof GeminiApiError) || error.status !== 429) {
-        throw error;
-      }
-
+    for (const model of GEMINI_MODEL_CHAIN) {
       try {
-        return await this.#generateWithModel(GEMINI_FALLBACK_MODEL, promptText);
-      } catch (fallbackError) {
-        if (fallbackError instanceof GeminiApiError && fallbackError.status === 429) {
-          throw new GeminiApiError(
-            `Rate limit atteint sur ${GEMINI_MODEL} et ${GEMINI_FALLBACK_MODEL}. Réessayez plus tard.`,
-            429,
-          );
+        return await this.#generateWithModel(model, promptText);
+      } catch (error) {
+        if (!(error instanceof GeminiApiError) || error.status !== 429) {
+          throw error;
         }
-        throw fallbackError;
       }
     }
+
+    throw new GeminiApiError(
+      `Rate limit atteint sur ${GEMINI_MODEL_CHAIN.join(', ')}. Réessayez plus tard.`,
+      429,
+    );
   }
 
   /**
